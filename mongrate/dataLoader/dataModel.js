@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var Registry = require("../registry");
+var Registry = require("./registry");
 
 // Data Model Cache
 // ----------------
