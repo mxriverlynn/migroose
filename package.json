@@ -1,0 +1,41 @@
+{
+  "name": "mongrate",
+  "version": "0.0.1",
+  "description": "MongoDB database / data-structure migrations, for MongooseJS models and schemas",
+  "main": "mongrate/index.js",
+  "scripts": {
+    "test": "grunt jasmine_node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/derickbailey/mongrate"
+  },
+  "keywords": [
+    "mongodb",
+    "mongoosejs",
+    "migrate",
+    "migration",
+    "database",
+    "structure",
+    "collections"
+  ],
+  "author": "Derick Bailey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/derickbailey/mongrate/issues"
+  },
+  "homepage": "https://github.com/derickbailey/mongrate",
+  "devDependencies": {
+    "bcrypt": "^0.8.0",
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jasmine-node": "^0.2.1",
+    "node-jasmine-async": "^0.1.0",
+    "mongoose": "^3.8.21"
+  },
+  "dependencies": {
+    "rsvp": "^3.0.16",
+    "underscore": "^1.7.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "curly": true,
+  "eqeqeq": true,
+  "immed": false,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "sub": true,
+  "undef": true,
+  "boss": true,
+  "eqnull": true,
+  "browser": true,
+  "debug": true,
+  "loopfunc": true,
+  "latedef": "nofunc",
+  "globals": {
+    "setImmediate": true,
+    "console": true,
+    "require": true,
+    "module": true,
+    "jasmine": true,
+    "describe": true,
+    "xdescribe": true,
+    "it": true,
+    "xit": true,
+    "expect": true
+  }
+}
+
