@@ -37,47 +37,65 @@ Migration.prototype.remove = function(removeConfig){
 Migration.prototype.migrate = function(cb){
   var that = this;
 
+  var hasId = this._hasMigrationId();
+  // always run if there is no migration id set
+  if (!hasId){
+    return this._runMigration(cb);
+  }
+
+  // if there is a migration id set, then only run if it has
+  // not previously been run for this app
+  MigrationModel.findOne({migrationId: this.migrationId}, function(err, model){
+    if (err) { return that._complete(err, cb); }
+
+    if (model){
+      that._alreadyRun(cb);
+    } else {
+      that._runMigration(cb);
+    }
+  });
+};
+
+// Private Helpers
+// ---------------
+
+Migration.prototype._hasMigrationId = function(){
+  var hasId = Object.prototype.hasOwnProperty.call(this, "migrationId");
+  var hasValue = !!this.migrationId;
+  return hasId && hasValue;
+};
+
+Migration.prototype._runMigration = function(cb){
+  var that = this;
   var stepRunner = this.stepRunner;
   var dataLoader = new DataLoader(this.loadConfig);
   var dataRemover = new DataRemover(this.removeConfig);
 
-  function runMigration(){
-    dataLoader.load(function(err, data){
-      if (err) { return that.complete(err); }
+  dataLoader.load(function(err, data){
+    if (err) { return that._complete(err, cb); }
 
-      stepRunner.run(data, function(err){
-        if (err) { return that.complete(err); }
+    stepRunner.run(data, function(err){
+      if (err) { return that._complete(err, cb); }
 
-        dataRemover.remove(function(err){
-          if (err) { return that.complete(err); }
+      dataRemover.remove(function(err){
+        if (err) { return that._complete(err, cb); }
 
-          that.save(function(err){
-            if (err) { return that.complete(err); }
+        that._save(function(err){
+          if (err) { return that._complete(err, cb); }
 
-            that.complete(null, cb);
-          });
+          that._complete(null, cb);
         });
       });
     });
-  }
-
-  if (this.migrationId){
-    MigrationModel.findOne({migrationId: this.migrationId}, function(err, model){
-      if (err) { return that.complete(err, cb); }
-
-      if (model){
-        that.emit("already-run");
-      } else {
-        runMigration();
-      }
-    });
-  } else {
-    runMigration();
-  }
-
+  });
 };
 
-Migration.prototype.complete = function(err, cb){
+Migration.prototype._alreadyRun = function(cb){
+  this.emit("already-run");
+  this._complete(null, cb);
+};
+
+Migration.prototype._complete = function(err, cb){
   if (err) {
     this.emit("error", err);
   }
@@ -89,8 +107,9 @@ Migration.prototype.complete = function(err, cb){
   }
 };
 
-Migration.prototype.save = function(cb){
-  if (!this.migrationId){ return cb(); }
+Migration.prototype._save = function(cb){
+  var hasId = this._hasMigrationId();
+  if (!hasId){ return cb(); }
 
   var model = new MigrationModel({
     migrationId: this.migrationId,

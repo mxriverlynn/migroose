@@ -45,21 +45,25 @@ describe("migration ids", function(){
 
     var executeCount = 0;
     var alreadyRun = false;
+
     async.beforeEach(function(done){
       var migration = new Mongrate.Migration("another-id");
 
-      migration.on("complete", function(){
+      migration.step(function(data, stepComplete){
         executeCount += 1;
-        migration.migrate();
+        stepComplete();
       });
 
       migration.on("already-run", function(){
         alreadyRun = true;
-        done();
       });
 
       migration.migrate(function(err){
         if (err) { console.log(err.stack); }
+        
+        migration.migrate(function(){
+          done();
+        });
       });
     });
 
