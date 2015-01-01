@@ -6,4 +6,4 @@ var Schema = mongoose.Schema({
   dateMigrated: {type: Date, default: Date.now}
 });
 
-module.exports = mongoose.model("_mongrateMigration", Schema);
+module.exports = mongoose.model("mongrateMigration", Schema);
