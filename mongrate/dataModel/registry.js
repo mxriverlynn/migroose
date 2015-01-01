@@ -1,7 +1,13 @@
+// Registry
+// --------
+
 function Registry(defaultValue){
   this._defaultValue = defaultValue;
   this._values = Object.create(null);
 }
+
+// Instance Methods
+// ----------------
 
 Registry.prototype.register = function(name, value){
   this._values[name] = value;
@@ -22,5 +28,8 @@ Registry.prototype.getValue = function(name){
 
   return value;
 };
+
+// Exports
+// -------
 
 module.exports = Registry;

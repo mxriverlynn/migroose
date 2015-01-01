@@ -3,17 +3,17 @@ var _ = require("underscore");
 
 var dataModel = require("../dataModel");
 
-// Data Loader
-// -----------
+// Data Remover
+// ------------
 
-function DataLoader(collectionConfig){
-  this.collectionConfig = collectionConfig || {};
+function DataRemover(collectionConfig){
+  this.collectionConfig = collectionConfig;
 }
 
 // Instance Methods
 // ----------------
 
-DataLoader.prototype.load = function(cb){
+DataRemover.prototype.remove = function(cb){
   var that = this;
   var promises = [];
 
@@ -27,15 +27,14 @@ DataLoader.prototype.load = function(cb){
 
   RSVP.all(promises)
     .then(function(data){
-      var result = arrayToObject(data);
-      cb(undefined, result);
+      cb(undefined);
     })
     .catch(function(err){
       cb(err);
     });
 };
 
-DataLoader.prototype.collectionPromise = function(name, collectionConfig){
+DataRemover.prototype.collectionPromise = function(name, collectionConfig){
   var that = this;
   var collectionName, query;
 
@@ -50,28 +49,17 @@ DataLoader.prototype.collectionPromise = function(name, collectionConfig){
   var p = new RSVP.Promise(function(resolve, reject){
     var collection = dataModel.get(collectionName);
 
-    collection.find(query, function(err, data){
+    collection.remove(query, function(err, data){
       if (err) { return reject(err); }
 
-      var result = {};
-      result[name] = data;
-
-      resolve(result);
+      resolve();
     });
   });
 
   return p;
 };
 
-// Helpers
-// -------
-
-function arrayToObject(arr){
-  var args = [{}].concat(arr);
-  return _.extend.apply(_, args);
-}
-
 // Exports
 // -------
 
-module.exports = DataLoader;
+module.exports = DataRemover;

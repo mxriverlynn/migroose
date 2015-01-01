@@ -3,6 +3,7 @@ var EventEmitter = require("events").EventEmitter;
 var RSVP = require("rsvp");
 
 var DataLoader = require("./dataLoader");
+var DataRemover = require("./dataRemover");
 var StepRunner = require("./stepRunner");
 
 // Migration
@@ -17,25 +18,36 @@ util.inherits(Migration, EventEmitter);
 // Instance Methods
 // ----------------
 
-Migration.prototype.load = function(collectionConfig){
-  this.collectionConfig = collectionConfig;
+Migration.prototype.load = function(loadConfig){
+  this.loadConfig = loadConfig;
 };
 
 Migration.prototype.step = function(step){
   this.stepRunner.add(step);
 };
 
-Migration.prototype.migrate = function(){
+Migration.prototype.remove = function(removeConfig){
+  this.removeConfig = removeConfig;
+};
+
+Migration.prototype.migrate = function(cb){
   var that = this;
 
-  var dataLoader = new DataLoader(this.collectionConfig);
+  var stepRunner = this.stepRunner;
+  var dataLoader = new DataLoader(this.loadConfig);
+  var dataRemover = new DataRemover(this.removeConfig);
+
   dataLoader.load(function(err, data){
-    if (err) { throw err; }
+    if (err) { return cb(err); }
 
-    that.stepRunner.run(data, function(err){
-      if (err) { throw err; }
+    stepRunner.run(data, function(err){
+      if (err) { return cb(err); }
 
-      that.emit("complete");
+      dataRemover.remove(function(err){
+        if (err) { return cb(err); }
+
+        that.emit("complete");
+      });
     });
   });
 };
