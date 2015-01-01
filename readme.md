@@ -219,6 +219,6 @@ information as the MigrationModel.find method.
 
 ## Legal Junk
 
-Mongrate is &copy;2014 Muted Solutions, LLC. All Rights Reserved.
+Mongrate is &copy;2015 Muted Solutions, LLC. All Rights Reserved.
 
 You may distribute and use Mongrate under the [MIT License](http://mutedsolutions.mit-license.org).
