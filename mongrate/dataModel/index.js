@@ -16,7 +16,7 @@ var DataModel = {
     if (dataModelCache.hasValue(collectionName)){
       collection = dataModelCache.getValue(collectionName);
     } else {
-      collection = mongoose.model(collectionName, mongoose.Schema({}));
+      collection = mongoose.model(collectionName, mongoose.Schema({}, {strict: false}));
       dataModelCache.register(collectionName, collection);
     }
 
