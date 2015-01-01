@@ -31,6 +31,8 @@ StepRunner.prototype.run = function(data, cb){
 
       step.call(that, data, done);
     });
+
+    promises.push(p);
   });
 
   RSVP.all(promises)
