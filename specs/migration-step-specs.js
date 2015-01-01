@@ -27,11 +27,10 @@ describe("migration steps", function(){
         stepComplete();
       });
 
-      migration.on("complete", function(){
+      migration.migrate(function(err){
+        if (err) { console.log(err.stack); }
         done();
       });
-
-      migration.migrate();
     });
 
     it("should run them in order", function(){

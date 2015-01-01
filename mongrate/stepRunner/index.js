@@ -17,10 +17,8 @@ StepRunner.prototype.add = function(step){
 StepRunner.prototype.run = function(data, cb){
   var that = this;
 
-  var promises = [];
-  this.steps.forEach(function(step){
-    var p = new RSVP.Promise(function(resolve, reject){
-
+  function getStepRunner(step){
+    return function(resolve, reject){
       var done = function(err){
         if (err) { 
           reject(err);
@@ -29,9 +27,14 @@ StepRunner.prototype.run = function(data, cb){
         }
       };
 
-      step.call(that, data, done);
-    });
+      step.call(undefined, data, done);
+    };
+  }
 
+  var promises = [];
+  this.steps.forEach(function(step){
+    var runner = getStepRunner(step);
+    var p = new RSVP.Promise(runner);
     promises.push(p);
   });
 

@@ -1,6 +1,7 @@
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
 var RSVP = require("rsvp");
+var _ = require("underscore");
 
 var DataLoader = require("./dataLoader");
 var DataRemover = require("./dataRemover");
@@ -42,18 +43,18 @@ Migration.prototype.migrate = function(cb){
 
   function runMigration(){
     dataLoader.load(function(err, data){
-      if (err) { return cb(err); }
+      if (err) { return that.complete(err); }
 
       stepRunner.run(data, function(err){
-        if (err) { return cb(err); }
+        if (err) { return that.complete(err); }
 
         dataRemover.remove(function(err){
-          if (err) { return cb(err); }
+          if (err) { return that.complete(err); }
 
           that.save(function(err){
-            if (err) { return cb(err); }
+            if (err) { return that.complete(err); }
 
-            that.emit("complete");
+            that.complete(null, cb);
           });
         });
       });
@@ -62,7 +63,7 @@ Migration.prototype.migrate = function(cb){
 
   if (this.migrationId){
     MigrationModel.findOne({migrationId: this.migrationId}, function(err, model){
-      if (err) { return cb(err); }
+      if (err) { return that.complete(err, cb); }
 
       if (model){
         that.emit("already-run");
@@ -74,6 +75,18 @@ Migration.prototype.migrate = function(cb){
     runMigration();
   }
 
+};
+
+Migration.prototype.complete = function(err, cb){
+  if (err) {
+    this.emit("error", err);
+  }
+
+  this.emit("complete", err);
+
+  if (_.isFunction(cb)){
+    cb(err);
+  }
 };
 
 Migration.prototype.save = function(cb){

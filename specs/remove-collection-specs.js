@@ -31,12 +31,9 @@ describe("remove collections", function(){
         removeThings: "removethings"
       });
 
-      migration.on("complete", function(){
-        done();
-      });
-
       migration.migrate(function(err){
-        console.log(err.stack);
+        if (err) { console.log(err.stack); }
+        done();
       });
     });
 
@@ -63,12 +60,9 @@ describe("remove collections", function(){
         }
       });
 
-      migration.on("complete", function(){
-        done();
-      });
-
       migration.migrate(function(err){
-        console.log(err.stack);
+        if (err) { console.log(err.stack); }
+        done();
       });
     });
 

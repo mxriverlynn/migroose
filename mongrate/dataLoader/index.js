@@ -20,7 +20,7 @@ DataLoader.prototype.load = function(cb){
   for (var name in this.collectionConfig) {
     if (this.collectionConfig.hasOwnProperty(name)){
       var config = this.collectionConfig[name];
-      var promise = that.collectionPromise(name, config);
+      var promise = that.loadCollection(name, config);
       promises.push(promise);
     }
   }
@@ -35,7 +35,7 @@ DataLoader.prototype.load = function(cb){
     });
 };
 
-DataLoader.prototype.collectionPromise = function(name, collectionConfig){
+DataLoader.prototype.loadCollection = function(name, collectionConfig){
   var that = this;
   var collectionName, query;
 

@@ -21,11 +21,10 @@ describe("load collections", function(){
         stepComplete();
       });
 
-      migration.on("complete", function(){
+      migration.migrate(function(err){
+        if (err) { console.log(err.stack); }
         done();
       });
-
-      migration.migrate();
     });
 
     it("should load the specified collection", function(){
@@ -53,12 +52,10 @@ describe("load collections", function(){
         stepComplete();
       });
 
-      migration.on("complete", function(){
+      migration.migrate(function(err){
+        if (err) { console.log(err.stack); }
         done();
       });
-
-      debugger;
-      migration.migrate();
     });
 
     it("should load the first collection", function(){
@@ -92,11 +89,10 @@ describe("load collections", function(){
         stepComplete();
       });
 
-      migration.on("complete", function(){
+      migration.migrate(function(err){
+        if (err) { console.log(err.stack); }
         done();
       });
-
-      migration.migrate();
     });
 
     it("should load the collection using the specified query", function(){

@@ -22,12 +22,8 @@ describe("migration ids", function(){
     async.beforeEach(function(done){
       var migration = new Mongrate.Migration(migrationId, migrationDescription);
 
-      migration.on("complete", function(){
-        done();
-      });
-
       migration.migrate(function(err){
-        console.log(err.stack);
+        if (err) { console.log(err.stack); }
         done();
       });
     });
@@ -62,7 +58,9 @@ describe("migration ids", function(){
         done();
       });
 
-      migration.migrate();
+      migration.migrate(function(err){
+        if (err) { console.log(err.stack); }
+      });
     });
 
     it("should only execute once", function(){

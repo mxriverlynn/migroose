@@ -20,7 +20,7 @@ DataRemover.prototype.remove = function(cb){
   for (var name in this.collectionConfig) {
     if (this.collectionConfig.hasOwnProperty(name)){
       var config = this.collectionConfig[name];
-      var promise = that.collectionPromise(name, config);
+      var promise = that.removeCollection(name, config);
       promises.push(promise);
     }
   }
@@ -34,7 +34,7 @@ DataRemover.prototype.remove = function(cb){
     });
 };
 
-DataRemover.prototype.collectionPromise = function(name, collectionConfig){
+DataRemover.prototype.removeCollection = function(name, collectionConfig){
   var that = this;
   var collectionName, query;
 
