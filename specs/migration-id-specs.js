@@ -8,33 +8,19 @@ describe("migration ids", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 
-  var migrationId = "some-id";
-
-  describe("when running a migration with an id", function(){
-    var async = new AsyncSpec(this);
-
-    async.beforeEach(function(done){
-      var migration = new Mongrate.Migration(migrationId);
-
-      migration.on("complete", function(){
-        done();
-      });
-
-      migration.migrate(function(err){
-        console.log(err.stack);
-      });
-    });
-
-    async.it("should store the migration id as having been run", function(done){
-      throw new Error("not implemented");
+  async.beforeEach(function(done){
+    Mongrate.MigrationModel.remove(function(err){
+      done();
     });
   });
 
-  describe("when running a migration with an id, twice", function(){
+  describe("when running a migration with an id", function(){
     var async = new AsyncSpec(this);
+    var migrationId = "some-id";
+    var migrationDescription = "some description of a migration";
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration(migrationId);
+      var migration = new Mongrate.Migration(migrationId, migrationDescription);
 
       migration.on("complete", function(){
         done();
@@ -42,11 +28,49 @@ describe("migration ids", function(){
 
       migration.migrate(function(err){
         console.log(err.stack);
+        done();
       });
     });
 
-    async.it("should only run once", function(done){
-      throw new Error("not implemented");
+    async.it("should store the migration, saying it has been run", function(done){
+      Mongrate.MigrationModel.findOne({migrationId: migrationId}, function(err, migrationModel){
+        if (err) { console.log(err.stack); throw err; }
+        expect(migrationModel).not.toBeUndefined();
+        expect(migrationModel.migrationId).toBe(migrationId);
+        expect(migrationModel.description).toBe(migrationDescription);
+        expect(migrationModel.dateMigrated).not.toBe(undefined);
+        done();
+      });
+    });
+  });
+
+  describe("when running a migration with an id multiple times", function(){
+    var async = new AsyncSpec(this);
+
+    var executeCount = 0;
+    var alreadyRun = false;
+    async.beforeEach(function(done){
+      var migration = new Mongrate.Migration("another-id");
+
+      migration.on("complete", function(){
+        executeCount += 1;
+        migration.migrate();
+      });
+
+      migration.on("already-run", function(){
+        alreadyRun = true;
+        done();
+      });
+
+      migration.migrate();
+    });
+
+    it("should only execute once", function(){
+      expect(executeCount).toBe(1);
+    });
+
+    it("should by already run", function(){
+      expect(alreadyRun).toBe(true);
     });
   });
 
