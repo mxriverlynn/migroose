@@ -21,7 +21,7 @@ npm install -g mongrate-cli
 
 ### Create A Migration Script
 
-To create a migration, you will want to use [mongrate-cli](/derickbailey/mongrate-cli).
+To create a migration, you will want to use [mongrate-cli](https://github.com/derickbailey/mongrate-cli).
 This is a command line tool to generate and run you migrations.
 
 ```
@@ -149,36 +149,21 @@ same as the `load` feature.
 
 ### Run The Migration
 
-There are a few final steps in your script, to run the migration.
-
-0. create a mongrate.js file
-0. export a `connect` function that opens your database connection
-
-```js
-// mongrate.js
-
-var mongoose = require("mongoose");
-
-module.exports = {
-  connect: function(cb){
-    var conn = "mongodb://localhost:27017/some-database";
-    mongoose.connect(conn, function(err){
-      if (err) { throw err; }
-      cb();
-    });
-  }
-};
-```
-
 Having written this complete script, you can now run the mongrate
-command line with no parameters, to execute your migrations:
+command line with no parameters, to execute your migrations.
+
+Please see the [mongrate-cli documentation](https://github.com/derickbailey/mongrate-cli)
+for information on how to configure the mongrate-cli tool and connect it to your database.
+
+Once you have connected mongrate to your database, you can use the mongrate command line
+tool to run your migrations:
 
 ```
 mongrate
 ```
 
-This will run the migration's load, steps and the remove processes. Running
-this migration mutliple times will result in the work being done only once,
+This will run the migrations that you have created, and not yet run. Running
+migrations mutliple times will result in the work being done only once,
 due to the ID passed in to the Migration constructor.
 
 ### View Prevously Run Migrations
@@ -187,7 +172,7 @@ If you would like to view the list of migrations that have been run on your
 app instance, you can do that in two different ways.
 
 0. Run the `Mongrate.MigrationModel.find` method
-0. Examine the `_mongrateMigrations` collection directly
+0. Examine the `mongratemigrations` collection directly
 
 To run the MigrationModel's find method, require Mongrate in your script
 and then execute the find method as you would any other MongooseJS model find
