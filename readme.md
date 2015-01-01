@@ -16,28 +16,26 @@ Start by installing mongrate in your project:
 
 ```
 npm install --save mongrate
+npm install -g mongrate-cli
 ```
 
 ### Create A Migration Script
 
-Create a folder for your migrations, and add a file with a timestamp in the name
-and a .js extension. For example, "sample-12-29-2014-10-59-03-am.js". Within this 
-file, you will need to `require("mongrate")` and create a migration from this
-object. Give the migration an ID in the constructor function - a unique name
-that will not be duplicated. It is common to use the same name and time stamp
-as the file name.
+To create a migration, you will want to use [mongrate-cli](/derickbailey/mongrate-cli).
+This is a command line tool to generate and run you migrations.
 
-```js
-// migrations/sample-12-29-2014-10-59-03-am.js
-
-var Mongrate = require("mongrate");
-
-var migration = new Mongrate.Migration("sample-12-29-2014-10-59-03-am");
+```
+mongrate some example migration
 ```
 
-The ID passed in to the Migration constructor function is used to ensure
-idempotency within a given database / system. Running a migration more than
-once will only do the work once, based on the ID.
+This will create a `mongrations/########-some-example-migration.js` file
+where "########" is a timestamp. The contents of this file will
+be a barebones migration that does nothing more than a console.log.
+
+The migration will also have an ID passed in to the Migration constructor
+function. This is used to ensure idempotency within a given 
+database / system. Running a migration more than once will only 
+do the work once, based on the ID.
 
 ### Load Previous Data Structures
 
@@ -153,34 +151,31 @@ same as the `load` feature.
 
 There are a few final steps in your script, to run the migration.
 
-0. Open your database connection
-0. Handle the "complete" event, to know the migration is done
-0. Handle the "already-run" event, to know the migration has already been run
-0. Run the `migration.migrate` method
+0. create a mongrate.js file
+0. export a `connect` function that opens your database connection
 
 ```js
-// bottom of migrations/sample-12-29-2014-10-59-03-am.js
+// mongrate.js
 
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/my-app", function(err){
-  if (err) { throw err; }
 
-  migration.on("complete", function(){
-    process.exit();
-  });
-
-  migration.on("already-run", function(){
-    process.exit();
-  });
-
-  migration.migrate();
-});
+module.exports = {
+  connect: function(cb){
+    var conn = "mongodb://localhost:27017/some-database";
+    mongoose.connect(conn, function(err){
+      if (err) { throw err; }
+      cb();
+    });
+  }
+};
 ```
 
-Having written this complete script, you can now run the script using the
-standard node command line to execute the file.
+Having written this complete script, you can now run the mongrate
+command line with no parameters, to execute your migrations:
 
-`node migrations/sample-12-29-2014-10-59-03-am.js`
+```
+mongrate
+```
 
 This will run the migration's load, steps and the remove processes. Running
 this migration mutliple times will result in the work being done only once,
