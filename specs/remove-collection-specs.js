@@ -1,8 +1,7 @@
 var AsyncSpec = require("node-jasmine-async");
-var mongoose = require("mongoose");
-var Mongrate = require("../mongrate");
+var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../mongrate/dataModel");
+var dataModel = require("../migroose/dataModel");
 
 describe("remove collections", function(){
   manageConnection(this);
@@ -25,7 +24,7 @@ describe("remove collections", function(){
     var things;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.remove({
         removeThings: "removethings"
@@ -51,7 +50,7 @@ describe("remove collections", function(){
     var things;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.remove({
         removeThings: {

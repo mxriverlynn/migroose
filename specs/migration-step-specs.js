@@ -1,5 +1,5 @@
 var AsyncSpec = require("node-jasmine-async");
-var Mongrate = require("../mongrate");
+var Migroose = require("../migroose");
 
 describe("migration steps", function(){
 
@@ -10,7 +10,7 @@ describe("migration steps", function(){
     async.beforeEach(function(done){
       stepsRun = [];
 
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.step(function(data, stepComplete){
         stepsRun.push(1);

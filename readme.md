@@ -1,31 +1,31 @@
-# Mongrate: MongoDB Migrations
+# Migroose: MongoDB Migrations
 
-Mongrate provides database / data-structure migrations for MongoDB, with NodeJS and MongooseJS 
+Migroose provides database / data-structure migrations for MongoDB, with NodeJS and MongooseJS 
 models / schemas.
 
 Changing your document structure in MongoDB is no different than changing a table structure
 in a relational database, when it comes to migrating data. The migration needs to be done - 
 you need your new data structure to be populated with the data from the old structure.
 
-Mongrate will help you get there by providing a structure and framework in which you can
+Migroose will help you get there by providing a structure and framework in which you can
 migrate from your old MongoDB collections and document structures, in to your new one.
 
 ## Getting Started
 
-Start by installing mongrate in your project:
+Start by installing migroose in your project:
 
 ```
-npm install --save mongrate
-npm install -g mongrate-cli
+npm install --save migroose
+npm install -g migroose-cli
 ```
 
 ### Create A Migration Script
 
-To create a migration, you will want to use [mongrate-cli](https://github.com/derickbailey/mongrate-cli).
+To create a migration, you will want to use [migroose-cli](https://github.com/derickbailey/migroose-cli).
 This is a command line tool to generate and run you migrations.
 
 ```
-mongrate some example migration
+migroose some example migration
 ```
 
 This will create a `mongrations/########-some-example-migration.js` file
@@ -149,17 +149,17 @@ same as the `load` feature.
 
 ### Run The Migration
 
-Having written this complete script, you can now run the mongrate
+Having written this complete script, you can now run the migroose
 command line with no parameters, to execute your migrations.
 
-Please see the [mongrate-cli documentation](https://github.com/derickbailey/mongrate-cli)
-for information on how to configure the mongrate-cli tool and connect it to your database.
+Please see the [migroose-cli documentation](https://github.com/derickbailey/migroose-cli)
+for information on how to configure the migroose-cli tool and connect it to your database.
 
-Once you have connected mongrate to your database, you can use the mongrate command line
+Once you have connected migroose to your database, you can use the migroose command line
 tool to run your migrations:
 
 ```
-mongrate
+migroose
 ```
 
 This will run the migrations that you have created, and not yet run. Running
@@ -171,17 +171,17 @@ due to the ID passed in to the Migration constructor.
 If you would like to view the list of migrations that have been run on your
 app instance, you can do that in two different ways.
 
-0. Run the `Mongrate.MigrationModel.find` method
-0. Examine the `mongratemigrations` collection directly
+0. Run the `Migroose.MigrationModel.find` method
+0. Examine the `migroosemigrations` collection directly
 
-To run the MigrationModel's find method, require Mongrate in your script
+To run the MigrationModel's find method, require Migroose in your script
 and then execute the find method as you would any other MongooseJS model find
 method.
 
 ```js
-var Mongrate = require("mongrate");
+var Migroose = require("migroose");
 
-Mongrate.MigrationModel.find(function(err, migrations){
+Migroose.MigrationModel.find(function(err, migrations){
   if (err) { throw err; }
 
   console.log(migrations);
@@ -193,12 +193,12 @@ current app database. You are free to use any MongooseJS methods to find
 Migrations, using the MigrationModel - it is a standard MongooseJS model / 
 schema.
 
-If you wish to examine the `_mongrateMigrations` collection in your MongoDB
+If you wish to examine the `migrootions` collection in your MongoDB
 instance directly, you may do this however you wish. It will show you the same
 information as the MigrationModel.find method.
 
 ## Legal Junk
 
-Mongrate is &copy;2015 Muted Solutions, LLC. All Rights Reserved.
+Migroose is &copy;2015 Muted Solutions, LLC. All Rights Reserved.
 
-You may distribute and use Mongrate under the [MIT License](http://mutedsolutions.mit-license.org).
+You may distribute and use Migroose under the [MIT License](http://mutedsolutions.mit-license.org).

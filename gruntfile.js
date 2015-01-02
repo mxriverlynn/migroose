@@ -20,7 +20,7 @@ module.exports = function(grunt){
       options: {
         jshintrc: ".jshintrc"
       },
-      src: [ "mongrate/**/*.js" ]
+      src: [ "migroose/**/*.js" ]
     },
 
     jasmine_node: {
@@ -41,7 +41,7 @@ module.exports = function(grunt){
 
     watch: {
       specs: {
-        files: ["mongrate/**/*.js", "specs/**/*.js"],
+        files: ["migroose/**/*.js", "specs/**/*.js"],
         tasks: ["specs"]
       }
     }

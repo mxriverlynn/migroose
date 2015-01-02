@@ -1,16 +1,45 @@
 var AsyncSpec = require("node-jasmine-async");
-var Mongrate = require("../mongrate");
+var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
+var dataModel = require("../migroose/dataModel");
 
 describe("load collections", function(){
   manageConnection(this);
+  var async = new AsyncSpec(this);
+
+  var M1 = dataModel.get("somethings");
+  var M2 = dataModel.get("querythings");
+
+  async.beforeEach(function(done){
+    var m1 = {foo: "bar"};
+    var m2 = {foo: "baz"};
+    var m3 = {foo: "quux"};
+
+    M1.create({foo: "bar"}, function(err){
+      if (err) { throw err; }
+
+      M2.create(m1, m2, m3, function(err){
+        if (err) { throw err; }
+
+        done();
+      });
+    });
+  });
+
+  async.afterEach(function(done){
+    M1.remove(function(err){
+      M2.remove(function(err){
+        done();
+      })
+    });
+  });
 
   describe("when specifying a collection to load", function(){
     var async = new AsyncSpec(this);
     var things;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.load({
         things: "somethings"
@@ -39,7 +68,7 @@ describe("load collections", function(){
     var things, moreThings;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.load({
         things: "somethings",
@@ -75,7 +104,7 @@ describe("load collections", function(){
     var things;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration();
+      var migration = new Migroose.Migration();
 
       migration.load({
         things: {

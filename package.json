@@ -1,14 +1,14 @@
 {
-  "name": "mongrate",
+  "name": "migroose",
   "version": "0.0.2",
-  "description": "MongoDB database / data-structure migrations, for MongooseJS models and schemas",
-  "main": "mongrate/index.js",
+  "description": "migration framework for mongoosejs and MongoDB",
+  "main": "migroose/index.js",
   "scripts": {
     "test": "grunt jasmine_node"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/derickbailey/mongrate"
+    "url": "https://github.com/derickbailey/migroose"
   },
   "keywords": [
     "mongodb",
@@ -22,9 +22,9 @@
   "author": "Derick Bailey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/derickbailey/mongrate/issues"
+    "url": "https://github.com/derickbailey/migroose/issues"
   },
-  "homepage": "https://github.com/derickbailey/mongrate",
+  "homepage": "https://github.com/derickbailey/migroose",
   "devDependencies": {
     "bcrypt": "^0.8.0",
     "grunt": "^0.4.5",

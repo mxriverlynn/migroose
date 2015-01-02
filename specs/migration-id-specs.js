@@ -1,15 +1,15 @@
 var AsyncSpec = require("node-jasmine-async");
 var mongoose = require("mongoose");
-var Mongrate = require("../mongrate");
+var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../mongrate/dataModel");
+var dataModel = require("../migroose/dataModel");
 
 describe("migration ids", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 
   async.beforeEach(function(done){
-    Mongrate.MigrationModel.remove(function(err){
+    Migroose.MigrationModel.remove(function(err){
       done();
     });
   });
@@ -20,7 +20,7 @@ describe("migration ids", function(){
     var migrationDescription = "some description of a migration";
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration(migrationId, migrationDescription);
+      var migration = new Migroose.Migration(migrationId, migrationDescription);
 
       migration.migrate(function(err){
         if (err) { console.log(err.stack); }
@@ -29,7 +29,7 @@ describe("migration ids", function(){
     });
 
     async.it("should store the migration, saying it has been run", function(done){
-      Mongrate.MigrationModel.findOne({migrationId: migrationId}, function(err, migrationModel){
+      Migroose.MigrationModel.findOne({migrationId: migrationId}, function(err, migrationModel){
         if (err) { console.log(err.stack); throw err; }
         expect(migrationModel).not.toBeUndefined();
         expect(migrationModel.migrationId).toBe(migrationId);
@@ -47,7 +47,7 @@ describe("migration ids", function(){
     var alreadyRun = false;
 
     async.beforeEach(function(done){
-      var migration = new Mongrate.Migration("another-id");
+      var migration = new Migroose.Migration("another-id");
 
       migration.step(function(data, stepComplete){
         executeCount += 1;
