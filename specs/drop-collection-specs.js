@@ -56,4 +56,3 @@ describe("drop collections", function(){
   });
 
 });
-

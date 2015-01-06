@@ -15,7 +15,11 @@ function CollectionDropper(collectionsToDrop){
 CollectionDropper.prototype.drop = function(cb){
   var that = this;
   var promises = [];
-  var collectionsToDrop = [].concat(this.collectionsToDrop);
+  var collectionsToDrop = [];
+  
+  if (_.isArray(this.collectionsToDrop)){
+    collectionsToDrop = collectionsToDrop.concat(this.collectionsToDrop);
+  }
 
   collectionsToDrop.forEach(function(collectionName){
     var promise = that.dropCollection(collectionName);
@@ -35,22 +39,29 @@ CollectionDropper.prototype.dropCollection = function(collectionName){
   var that = this;
 
   var p = new RSVP.Promise(function(resolve, reject){
-    var collections = _.keys(mongoose.connection.collections);
 
-    var collection = mongoose.connection.collections[collectionName];
-    var hasCollection = (!!collection);
-
-    if (hasCollection){
-      collection.drop(function(err) {
-        if (err) { reject(err); }
-        resolve();
-      });
-    } else {
+    that._dropCollection(collectionName, function(err) {
+      if (err) { reject(err); }
       resolve();
-    }
+    });
   });
 
   return p;
+};
+
+CollectionDropper.prototype._dropCollection = function(collectionName, cb){
+  mongoose.connection.db.collection(collectionName, function(err, collection){
+    if (err) { return cb(err); }
+
+    if (!collection){
+      return cb();
+    }
+
+    collection.drop(function(err){
+      if (err) { return cb(err); }
+      return cb();
+    });
+  });
 };
 
 // Exports
