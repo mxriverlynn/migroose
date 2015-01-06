@@ -123,9 +123,9 @@ which they are defined in the file. This allows you to have multiple steps that
 potentially deal with multiple collections, or to have processes that are 
 a little more involved be split apart.
 
-### Remove Old Data Structures
+### Remove Old Data
 
-Having migrated your data, you may wish to remove the old collection or models
+Having migrated your data, you may wish to remove data from old collections (models)
 from your database. This can be with the `remove` configuration, which works
 the same was as the `load` configuration.
 
@@ -146,6 +146,18 @@ documents that match the query will be removed.
 
 Note that the query for removing data can be any valid MongooseJS query, the
 same as the `load` feature.
+
+### Drop Old Collections
+
+If you are completely removing a collection from your database, you may wish
+to drop the collection entirely after migrating data out of it. To do that, 
+you can specify a `drop` configuration with a list of collections.
+
+```js
+migration.drop("somethings", "otherthings", "etcthings");
+```
+
+Drops will run last in the migration process.
 
 ### Run The Migration
 

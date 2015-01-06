@@ -5,6 +5,7 @@ var _ = require("underscore");
 
 var DataLoader = require("./dataLoader");
 var DataRemover = require("./dataRemover");
+var CollectionDropper = require("./collectionDropper");
 var StepRunner = require("./stepRunner");
 var MigrationModel = require("./migrationModel");
 
@@ -32,6 +33,11 @@ Migration.prototype.step = function(step){
 
 Migration.prototype.remove = function(removeConfig){
   this.removeConfig = removeConfig;
+};
+
+Migration.prototype.drop = function(){
+  var collectionsToDrop = Array.prototype.slice.call(arguments);
+  this.collectionsToDrop = collectionsToDrop;
 };
 
 Migration.prototype.migrate = function(cb){
@@ -70,6 +76,7 @@ Migration.prototype._runMigration = function(cb){
   var stepRunner = this.stepRunner;
   var dataLoader = new DataLoader(this.loadConfig);
   var dataRemover = new DataRemover(this.removeConfig);
+  var collectionDropper = new CollectionDropper(this.collectionsToDrop);
 
   dataLoader.load(function(err, data){
     if (err) { return that._complete(err, cb); }
@@ -80,13 +87,21 @@ Migration.prototype._runMigration = function(cb){
       dataRemover.remove(function(err){
         if (err) { return that._complete(err, cb); }
 
-        that._save(function(err){
+        collectionDropper.drop(function(err){
           if (err) { return that._complete(err, cb); }
 
-          that._complete(null, cb);
+          that._save(function(err){
+            if (err) { return that._complete(err, cb); }
+
+            that._complete(null, cb);
+          });
+
         });
+
       });
+
     });
+
   });
 };
 
@@ -96,7 +111,10 @@ Migration.prototype._alreadyRun = function(cb){
 };
 
 Migration.prototype._complete = function(err, cb){
+
   if (err) {
+    console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+    console.log(err.stack);
     this.emit("error", err);
   }
 

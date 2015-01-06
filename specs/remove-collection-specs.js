@@ -3,7 +3,7 @@ var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
 var dataModel = require("../migroose/dataModel");
 
-describe("remove collections", function(){
+describe("remove documents from collection", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 
