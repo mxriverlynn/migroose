@@ -93,7 +93,7 @@ Migration.prototype._runMigration = function(cb){
           that._save(function(err){
             if (err) { return that._complete(err, cb); }
 
-            that._complete(null, cb);
+            that._complete(undefined, cb);
           });
 
         });
@@ -107,14 +107,12 @@ Migration.prototype._runMigration = function(cb){
 
 Migration.prototype._alreadyRun = function(cb){
   this.emit("already-run");
-  this._complete(null, cb);
+  this._complete(undefined, cb);
 };
 
 Migration.prototype._complete = function(err, cb){
 
   if (err) {
-    console.log("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-    console.log(err.stack);
     this.emit("error", err);
   }
 

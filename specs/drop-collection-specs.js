@@ -22,7 +22,7 @@ describe("drop collections", function(){
     });
   });
 
-  describe("when specifying a collection to drop", function(){
+  xdescribe("when specifying a collection to drop", function(){
     var async = new AsyncSpec(this);
     var things;
 
@@ -52,6 +52,29 @@ describe("drop collections", function(){
         expect(hasDropThings).toBe(false);
         done();
       });
+    });
+  });
+
+  describe("when trying to drop a collection that doesn't exist", function(){
+    var async = new AsyncSpec(this);
+    var things;
+
+    var err; 
+    async.beforeEach(function(done){
+      var migration = new Migroose.Migration();
+
+      migration.drop("i-dont-exist");
+
+      migration.migrate(function(e){
+        err = e;
+        if (err) { console.log(err.stack); }
+        done();
+      });
+    });
+
+    async.it("should not throw an error", function(done){
+      expect(err).toBe(undefined);
+      done();
     });
   });
 

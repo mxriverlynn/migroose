@@ -40,13 +40,34 @@ CollectionDropper.prototype.dropCollection = function(collectionName){
 
   var p = new RSVP.Promise(function(resolve, reject){
 
-    that._dropCollection(collectionName, function(err) {
-      if (err) { reject(err); }
-      resolve();
+    that._hasCollection(collectionName, function(err, hasCollection) {
+      if (err) { return reject(err); }
+        
+      if (!hasCollection) { return resolve(); }
+
+      that._dropCollection(collectionName, function(err) {
+        if (err) { return reject(err); }
+        resolve();
+      });
     });
   });
 
   return p;
+};
+
+CollectionDropper.prototype._hasCollection = function(collectionName, cb){
+  mongoose.connection.db.collectionNames(function(err, names){
+    if (err) { return cb(err); }
+
+    var hasCollection = false;
+    names.forEach(function(col){
+      if (col.name.split(".")[1] === collectionName){ 
+        hasCollection = true;
+      }
+    });
+
+    cb(null, hasCollection);
+  });
 };
 
 CollectionDropper.prototype._dropCollection = function(collectionName, cb){
