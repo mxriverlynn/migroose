@@ -13,18 +13,24 @@ describe("migration steps", function(){
       var migration = new Migroose.Migration();
 
       migration.step(function(data, stepComplete){
-        stepsRun.push(1);
-        stepComplete();
+        setTimeout(function(){
+          stepsRun.push(1);
+          stepComplete();
+        }, 50);
       });
 
       migration.step(function(data, stepComplete){
-        stepsRun.push(2);
-        stepComplete();
+        setImmediate(function(){
+          stepsRun.push(2);
+          stepComplete();
+        });
       });
 
       migration.step(function(data, stepComplete){
-        stepsRun.push(3);
-        stepComplete();
+        setTimeout(function(){
+          stepsRun.push(3);
+          stepComplete();
+        }, 10);
       });
 
       migration.migrate(function(err){

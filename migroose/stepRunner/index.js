@@ -14,37 +14,29 @@ StepRunner.prototype.add = function(step){
   this.steps.push(step);
 };
 
-StepRunner.prototype.run = function(data, cb){
+StepRunner.prototype.run = function(data, done){
   var that = this;
 
-  function getStepRunner(step){
-    return function(resolve, reject){
-      var done = function(err){
-        if (err) { 
-          reject(err);
-        } else {
-          resolve();
-        }
-      };
+  function runStep(steps, data, done){
+    if (steps.length === 0) {
+      return done();
+    }
 
-      step.call(undefined, data, done);
-    };
+    var step = steps.shift();
+
+    function next(){
+      setImmediate(function(){
+        runStep(steps, data, done);
+      });
+    }
+
+    step(data, function(err){
+      if (err) { return done(err); }
+      return next();
+    });
   }
 
-  var promises = [];
-  this.steps.forEach(function(step){
-    var runner = getStepRunner(step);
-    var p = new RSVP.Promise(runner);
-    promises.push(p);
-  });
-
-  RSVP.all(promises)
-    .then(function(){
-      cb(null);
-    })
-    .catch(function(err){
-      cb(err);
-    });
+  runStep(this.steps, data, done);
 };
 
 // Exports
