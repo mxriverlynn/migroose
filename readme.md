@@ -37,7 +37,7 @@ function. This is used to ensure idempotency within a given
 database / system. Running a migration more than once will only 
 do the work once, based on the ID.
 
-### Load Previous Data Structures
+### Data Load
 
 If you are migrating away from an old data structure, and no longer have a
 model that represents this structure, you can use the data load feature.
@@ -57,6 +57,8 @@ migration.load({
 });
 ```
 
+#### Data Availability
+
 When the migration is run, each of the collections specified in the `.load`
 configuration will result in a data set being made made available to the steps.
 
@@ -64,6 +66,28 @@ If you need to limit the data that is loaded, from within a given collection,
 you can specify any standard MongooseJS query, as shown in the above example.
 If you do not need to limit the data returned, and want to retrieve the entire
 collection, specifying the collection name directly will do that.
+
+#### Data Structure
+
+The data loaded by the `load` command returns a raw MongoDB "collection" and
+an array od "documents" on the named data parameter.
+
+```js
+migration.step(function(data, stepComplete){
+
+  // the MongoDB collection
+  var myCollection = data.myData.collection;
+
+  // the documents from the collection
+  var myDocuments = data.myData.documents;
+
+});
+```
+
+By returning the raw collection and document array, you can manipulate the 
+documents in a manner that would not be possible using MongooseJS models. However,
+this does limit your migration code in that you can't use methods and features
+of MongooseJS models and schemas. 
 
 ### Run Migration Steps
 
@@ -88,7 +112,7 @@ var MyModel = require("./models/myModel");
 
 migration.step(function(data, stepComplete){
 
-  var oldData = data.moreData[0];
+  var oldData = data.moreData.documents[0];
 
   var myModel = new MyModel({
     something: oldData.something,
