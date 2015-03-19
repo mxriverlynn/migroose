@@ -1,7 +1,7 @@
 var AsyncSpec = require("node-jasmine-async");
 var Migroose = require("../migroose");
 
-xdescribe("migration steps", function(){
+describe("migration steps", function(){
 
   describe("when running multiple steps", function(){
     var async = new AsyncSpec(this);

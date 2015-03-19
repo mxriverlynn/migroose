@@ -1,7 +1,6 @@
 var RSVP = require("rsvp");
 var _ = require("underscore");
-
-var dataModel = {};
+var mongoose = require("mongoose");
 
 // Data Remover
 // ------------
@@ -14,6 +13,7 @@ function DataRemover(collectionConfig){
 // ----------------
 
 DataRemover.prototype.remove = function(cb){
+  debugger;
   var that = this;
   var promises = [];
 
@@ -35,6 +35,7 @@ DataRemover.prototype.remove = function(cb){
 };
 
 DataRemover.prototype.removeCollection = function(name, collectionConfig){
+  debugger;
   var that = this;
   var collectionName, query;
 
@@ -46,18 +47,29 @@ DataRemover.prototype.removeCollection = function(name, collectionConfig){
     collectionName = collectionConfig;
   }
 
-  var p = new RSVP.Promise(function(resolve, reject){
-    var collection = dataModel.get(collectionName);
+  return _executeQuery(collectionName, query);
+};
 
-    collection.remove(query, function(err, data){
+// Helpers
+// -------
+
+function _executeQuery(collectionName, query){
+  return new RSVP.Promise(function(resolve, reject){
+    debugger;
+
+    mongoose.connection.db.collection(collectionName, function(err, collection){
+      debugger;
       if (err) { return reject(err); }
 
-      resolve();
+      collection.remove(query, function(err, data){
+        debugger;
+        if (err) { return reject(err); }
+        resolve();
+      });
     });
-  });
 
-  return p;
-};
+  });
+}
 
 // Exports
 // -------
