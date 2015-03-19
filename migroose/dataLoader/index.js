@@ -1,7 +1,6 @@
 var RSVP = require("rsvp");
+var mongoose = require("mongoose");
 var _ = require("underscore");
-
-var dataModel = require("../dataModel");
 
 // Data Loader
 // -----------
@@ -20,7 +19,7 @@ DataLoader.prototype.load = function(cb){
   for (var name in this.collectionConfig) {
     if (this.collectionConfig.hasOwnProperty(name)){
       var config = this.collectionConfig[name];
-      var promise = that.loadCollection(name, config);
+      var promise = that._loadCollection(name, config);
       promises.push(promise);
     }
   }
@@ -35,7 +34,10 @@ DataLoader.prototype.load = function(cb){
     });
 };
 
-DataLoader.prototype.loadCollection = function(name, collectionConfig){
+// private API
+// -----------
+
+DataLoader.prototype._loadCollection = function(name, collectionConfig){
   var that = this;
   var collectionName, query;
 
@@ -47,24 +49,32 @@ DataLoader.prototype.loadCollection = function(name, collectionConfig){
     collectionName = collectionConfig;
   }
 
-  var p = new RSVP.Promise(function(resolve, reject){
-    var collection = dataModel.get(collectionName);
-
-    collection.find(query, function(err, data){
-      if (err) { return reject(err); }
-
-      var result = {};
-      result[name] = data;
-
-      resolve(result);
-    });
-  });
-
-  return p;
+  return _executeQuery(name, collectionName, query);
 };
 
 // Helpers
 // -------
+
+function _executeQuery(name, collectionName, query){
+  return new RSVP.Promise(function(resolve, reject){
+
+    mongoose.connection.db.collection(collectionName, function(err, collection){
+      collection.find(query).toArray(function(err, documents){
+        if (err) { return reject(err); }
+
+        var result = {};
+        var data = {
+          documents: documents,
+          collection: collection
+        };
+        result[name] = data;
+
+        resolve(result);
+      });
+    });
+
+  });
+}
 
 function arrayToObject(arr){
   var args = [{}].concat(arr);

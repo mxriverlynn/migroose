@@ -1,9 +1,8 @@
 var AsyncSpec = require("node-jasmine-async");
 var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../migroose/dataModel");
 
-describe("remove documents from collection", function(){
+xdescribe("remove documents from collection", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 

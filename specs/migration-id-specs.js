@@ -2,9 +2,8 @@ var AsyncSpec = require("node-jasmine-async");
 var mongoose = require("mongoose");
 var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../migroose/dataModel");
 
-describe("migration ids", function(){
+xdescribe("migration ids", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 

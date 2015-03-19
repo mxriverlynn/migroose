@@ -1,34 +1,46 @@
 var AsyncSpec = require("node-jasmine-async");
+
 var Migroose = require("../migroose");
+var DataLoader = require("../migroose/dataLoader");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../migroose/dataModel");
 
 describe("load collections", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 
-  var M1 = dataModel.get("somethings");
-  var M2 = dataModel.get("querythings");
+  var dataLoader, someThings, queryThings;
 
   async.beforeEach(function(done){
+    dataLoader = new DataLoader({
+      someThings: "somethings",
+      queryThings: "querythings"
+    });
+
     var m1 = {foo: "bar"};
     var m2 = {foo: "baz"};
     var m3 = {foo: "quux"};
 
-    M1.create({foo: "bar"}, function(err){
+    dataLoader.load(function(err, data){
       if (err) { throw err; }
 
-      M2.create(m1, m2, m3, function(err){
+      someThings = data.someThings.collection;
+      queryThings = data.queryThings.collection;
+
+      someThings.insert(m1, function(err){
         if (err) { throw err; }
 
-        done();
+        queryThings.insert([m1, m2, m3], function(err){
+          if (err) { throw err; }
+
+          done();
+        });
       });
     });
   });
 
   async.afterEach(function(done){
-    M1.remove(function(err){
-      M2.remove(function(err){
+    someThings.remove(function(err){
+      queryThings.remove(function(err){
         done();
       })
     });
@@ -57,9 +69,16 @@ describe("load collections", function(){
     });
 
     it("should load the specified collection", function(){
-      expect(things).not.toBeUndefined();
-      expect(things.length).toBe(1);
-      expect(things[0].get("foo")).toBe("bar");
+      var collection = things.collection;
+      expect(collection).not.toBeUndefined();
+      expect(collection.collectionName).toBe("somethings");
+    });
+
+    it("should load the data from that collection", function(){
+      var documents = things.documents;
+      expect(documents).not.toBeUndefined();
+      expect(documents.length).toBe(1);
+      expect(documents[0].foo).toBe("bar");
     });
   });
 
@@ -76,8 +95,8 @@ describe("load collections", function(){
       });
 
       migration.step(function(data, stepComplete){
-        things = data.things;
-        moreThings = data.moreThings;
+        things = data.things.documents;
+        moreThings = data.moreThings.documents;
         stepComplete();
       });
 
@@ -90,7 +109,7 @@ describe("load collections", function(){
     it("should load the first collection", function(){
       expect(things).not.toBeUndefined();
       expect(things.length).toBe(1);
-      expect(things[0].get("foo")).toBe("bar");
+      expect(things[0].foo).toBe("bar");
     });
 
     it("should load the second collection", function(){
@@ -114,7 +133,7 @@ describe("load collections", function(){
       });
 
       migration.step(function(data, stepComplete){
-        things = data.things;
+        things = data.things.documents;
         stepComplete();
       });
 
@@ -127,7 +146,7 @@ describe("load collections", function(){
     it("should load the collection using the specified query", function(){
       expect(things).not.toBeUndefined();
       expect(things.length).toBe(1);
-      expect(things[0].get("foo")).toBe("baz");
+      expect(things[0].foo).toBe("baz");
     });
   });
 

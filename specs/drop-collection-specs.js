@@ -1,28 +1,32 @@
-var _ = require("underscore");
 var AsyncSpec = require("node-jasmine-async");
 var mongoose = require("mongoose");
+var _ = require("underscore");
 
 var Migroose = require("../migroose");
+var DataLoader = require("../migroose/dataLoader");
 var manageConnection = require("./helpers/connection");
-var dataModel = require("../migroose/dataModel");
 
 describe("drop collections", function(){
   manageConnection(this);
   var async = new AsyncSpec(this);
 
-  var Model = dataModel.get("dropthings");
-
   async.beforeEach(function(done){
     var m1 = {foo: "bar"};
     var m2 = {foo: "baz"};
 
-    Model.create(m1, m2, function(err){
-      if (err) { throw err; }
-      done();
+    var dataLoader = new DataLoader({
+      dropThings: "dropthings"
+    });
+
+    dataLoader.load(function(err, data){
+      data.dropThings.collection.insert([m1, m2], function(err){
+        if (err) { throw err; }
+        done();
+      });
     });
   });
 
-  xdescribe("when specifying a collection to drop", function(){
+  describe("when specifying a collection to drop", function(){
     var async = new AsyncSpec(this);
     var things;
 

@@ -1,7 +1,7 @@
 var RSVP = require("rsvp");
 var _ = require("underscore");
 
-var dataModel = require("../dataModel");
+var dataModel = {};
 
 // Data Remover
 // ------------
