@@ -89,6 +89,12 @@ documents in a manner that would not be possible using MongooseJS models. Howeve
 this does limit your migration code in that you can't use methods and features
 of MongooseJS models and schemas. 
 
+#### Manipulating Data
+
+If you wish to manipulate the data in your documents that are loaded with the
+`load` feature, you can do so. To add / update or otherwise save things to the
+database, see the [MongoDB Collection documentation](http://mongodb.github.io/node-mongodb-native/api-generated/collection.html)
+
 ### Run Migration Steps
 
 Now that you have a migration and have optionally specified a collection of
