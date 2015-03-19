@@ -5,6 +5,7 @@ var RSVP = require("rsvp");
 
 function StepRunner(){
   this.steps = [];
+  this.data = {};
 }
 
 // Instance Methods
@@ -14,10 +15,9 @@ StepRunner.prototype.add = function(step){
   this.steps.push(step);
 };
 
-StepRunner.prototype.run = function(data, done){
+StepRunner.prototype.run = function(done){
   var that = this;
-
-  function runStep(steps, data, done){
+  function runStep(steps, done){
     if (steps.length === 0) {
       return done();
     }
@@ -26,17 +26,24 @@ StepRunner.prototype.run = function(data, done){
 
     function next(){
       setImmediate(function(){
-        runStep(steps, data, done);
+        runStep(steps, done);
       });
     }
 
-    step(data, function(err){
+    step(that.data, function(err){
       if (err) { return done(err); }
       return next();
     });
   }
 
-  runStep(this.steps, data, done);
+  runStep(this.steps, done);
+};
+
+StepRunner.prototype.storeData = function(newData){
+  var data = this.data;
+  Object.keys(newData).forEach(function(key){
+    data[key] = newData[key];
+  });
 };
 
 // Exports

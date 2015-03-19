@@ -37,6 +37,23 @@ function. This is used to ensure idempotency within a given
 database / system. Running a migration more than once will only 
 do the work once, based on the ID.
 
+## Working With The Migration API
+
+The first thing you need to know: **Every method in the migration API
+creates a new step to execute. Steps are always run in the order in which
+they are defined.**
+
+The net effect of this: If you drop a table first and then try to load data
+from it, there will be no data to load!
+
+So be careful. Be sure to specify the steps in the order you need. As a
+recommended starting point, use steps in this order:
+
+0. Data Load
+0. Custom Migration Steps
+0. Data Remove
+0. Collection Drop
+
 ### Data Load
 
 If you are migrating away from an old data structure, and no longer have a
@@ -95,7 +112,7 @@ If you wish to manipulate the data in your documents that are loaded with the
 `load` feature, you can do so. To add / update or otherwise save things to the
 database, see the [MongoDB Collection documentation](http://mongodb.github.io/node-mongodb-native/api-generated/collection.html)
 
-### Run Migration Steps
+### Custom Migration Steps
 
 Now that you have a migration and have optionally specified a collection of
 documents to load, you can define steps for your migration. Any given migration
@@ -189,7 +206,7 @@ migration.drop("somethings", "otherthings", "etcthings");
 
 Drops will run last in the migration process.
 
-### Run The Migration
+## Run The Migration
 
 Having written this complete script, you can now run the migroose
 command line with no parameters, to execute your migrations.
@@ -208,7 +225,7 @@ This will run the migrations that you have created, and not yet run. Running
 migrations mutliple times will result in the work being done only once,
 due to the ID passed in to the Migration constructor.
 
-### View Prevously Run Migrations
+## View Prevously Run Migrations
 
 If you would like to view the list of migrations that have been run on your
 app instance, you can do that in two different ways.

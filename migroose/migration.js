@@ -23,21 +23,44 @@ util.inherits(Migration, EventEmitter);
 // Instance Methods
 // ----------------
 
-Migration.prototype.load = function(loadConfig){
-  this.loadConfig = loadConfig;
-};
-
 Migration.prototype.step = function(step){
   this.stepRunner.add(step);
 };
 
+Migration.prototype.load = function(loadConfig){
+  var stepRunner = this.stepRunner;
+  var dataLoader = new DataLoader(loadConfig);
+
+  this.step(function(data, done){
+    dataLoader.load(function(err, data){
+      if (err) { return done(err); }
+      stepRunner.storeData(data);
+      done();
+    });
+  });
+};
+
 Migration.prototype.remove = function(removeConfig){
-  this.removeConfig = removeConfig;
+  var dataRemover = new DataRemover(removeConfig);
+
+  this.step(function(data, done){
+    dataRemover.remove(function(err){
+      if (err) { return done(err); }
+      done();
+    });
+  });
 };
 
 Migration.prototype.drop = function(){
   var collectionsToDrop = Array.prototype.slice.call(arguments);
-  this.collectionsToDrop = collectionsToDrop;
+  var collectionDropper = new CollectionDropper(collectionsToDrop);
+
+  this.step(function(data, done){
+    collectionDropper.drop(function(err){
+      if (err) { return done(err); }
+      done();
+    });
+  });
 };
 
 Migration.prototype.migrate = function(cb){
@@ -73,35 +96,13 @@ Migration.prototype._hasMigrationId = function(){
 
 Migration.prototype._runMigration = function(cb){
   var that = this;
-  var stepRunner = this.stepRunner;
-  var dataLoader = new DataLoader(this.loadConfig);
-  var dataRemover = new DataRemover(this.removeConfig);
-  var collectionDropper = new CollectionDropper(this.collectionsToDrop);
 
-  dataLoader.load(function(err, data){
+  this.stepRunner.run(function(err){
     if (err) { return that._complete(err, cb); }
-
-    stepRunner.run(data, function(err){
+    that._save(function(err){
       if (err) { return that._complete(err, cb); }
-
-      dataRemover.remove(function(err){
-        if (err) { return that._complete(err, cb); }
-
-        collectionDropper.drop(function(err){
-          if (err) { return that._complete(err, cb); }
-
-          that._save(function(err){
-            if (err) { return that._complete(err, cb); }
-
-            that._complete(undefined, cb);
-          });
-
-        });
-
-      });
-
+      that._complete(undefined, cb);
     });
-
   });
 };
 
