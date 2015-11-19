@@ -1,6 +1,5 @@
 var util = require("util");
 var EventEmitter = require("events").EventEmitter;
-var RSVP = require("rsvp");
 var _ = require("underscore");
 
 var DataLoader = require("./dataLoader");
@@ -112,13 +111,6 @@ Migration.prototype._alreadyRun = function(cb){
 };
 
 Migration.prototype._complete = function(err, cb){
-
-  if (err) {
-    this.emit("error", err);
-  }
-
-  this.emit("complete", err);
-
   if (_.isFunction(cb)){
     cb(err);
   }

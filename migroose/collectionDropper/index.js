@@ -1,4 +1,3 @@
-var RSVP = require("rsvp");
 var _ = require("underscore");
 var mongoose = require("mongoose");
 
@@ -26,7 +25,7 @@ CollectionDropper.prototype.drop = function(cb){
     promises.push(promise);
   });
 
-  RSVP.all(promises)
+  Promise.all(promises)
     .then(function(data){
       cb(undefined);
     })
@@ -38,7 +37,7 @@ CollectionDropper.prototype.drop = function(cb){
 CollectionDropper.prototype.dropCollection = function(collectionName){
   var that = this;
 
-  var p = new RSVP.Promise(function(resolve, reject){
+  var p = new Promise(function(resolve, reject){
 
     that._hasCollection(collectionName, function(err, hasCollection) {
       if (err) { return reject(err); }

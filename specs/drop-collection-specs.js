@@ -17,14 +17,17 @@ describe("drop collections", function(){
     });
 
     dataLoader.load(function(err, data){
+      if (err) { throw err; }
+
       data.dropThings.collection.insert([m1, m2], function(err){
         if (err) { throw err; }
+
         done();
       });
     });
   });
 
-  describe("when specifying a collection to drop", function(){
+  fdescribe("when specifying a collection to drop", function(){
     var things;
 
     beforeEach(function(done){
@@ -33,10 +36,10 @@ describe("drop collections", function(){
       migration.drop("dropthings");
 
       migration.migrate(function(err){
-        if (err) { console.log(err.stack); }
+        if (err) { return done(err); }
         done();
       });
-    });
+    }, 500000);
 
     it("should drop the specified collection", function(done){
       var dbName = mongoose.connection.db.databaseName;
@@ -67,7 +70,7 @@ describe("drop collections", function(){
 
       migration.migrate(function(e){
         err = e;
-        if (err) { console.log(err.stack); }
+        if (err) { return done(err); }
         done();
       });
     });

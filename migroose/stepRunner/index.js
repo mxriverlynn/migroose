@@ -1,5 +1,3 @@
-var RSVP = require("rsvp");
-
 // StepRunner
 // ----------
 
