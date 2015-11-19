@@ -1,3 +1,4 @@
+var RSVP = require("rsvp");
 var _ = require("underscore");
 var mongoose = require("mongoose");
 
@@ -25,7 +26,7 @@ CollectionDropper.prototype.drop = function(cb){
     promises.push(promise);
   });
 
-  Promise.all(promises)
+  RSVP.all(promises)
     .then(function(data){
       cb(undefined);
     })
@@ -37,7 +38,7 @@ CollectionDropper.prototype.drop = function(cb){
 CollectionDropper.prototype.dropCollection = function(collectionName){
   var that = this;
 
-  var p = new Promise(function(resolve, reject){
+  var p = new RSVP.Promise(function(resolve, reject){
 
     that._hasCollection(collectionName, function(err, hasCollection) {
       if (err) { return reject(err); }
@@ -55,16 +56,13 @@ CollectionDropper.prototype.dropCollection = function(collectionName){
 };
 
 CollectionDropper.prototype._hasCollection = function(collectionName, cb){
-  mongoose.connection.db.collectionNames(function(err, names){
+  var query = {
+    name: collectionName
+  };
+
+  mongoose.connection.db.listCollections(query).toArray(function(err, collections){
     if (err) { return cb(err); }
-
-    var hasCollection = false;
-    names.forEach(function(col){
-      if (col.name.split(".")[1] === collectionName){ 
-        hasCollection = true;
-      }
-    });
-
+    var hasCollection = (collections.length === 1);
     cb(null, hasCollection);
   });
 };

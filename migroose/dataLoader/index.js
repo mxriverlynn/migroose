@@ -1,3 +1,4 @@
+var RSVP = require("rsvp");
 var mongoose = require("mongoose");
 var _ = require("underscore");
 
@@ -23,7 +24,7 @@ DataLoader.prototype.load = function(cb){
     }
   }
 
-  Promise.all(promises)
+  RSVP.Promise.all(promises)
     .then(function(data){
       var result = arrayToObject(data);
       cb(undefined, result);
@@ -55,7 +56,7 @@ DataLoader.prototype._loadCollection = function(name, collectionConfig){
 // -------
 
 function _executeQuery(name, collectionName, query){
-  return new Promise(function(resolve, reject){
+  return new RSVP.Promise(function(resolve, reject){
 
     mongoose.connection.db.collection(collectionName, function(err, collection){
       collection.find(query).toArray(function(err, documents){

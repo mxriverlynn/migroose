@@ -27,7 +27,7 @@ describe("drop collections", function(){
     });
   });
 
-  fdescribe("when specifying a collection to drop", function(){
+  describe("when specifying a collection to drop", function(){
     var things;
 
     beforeEach(function(done){
@@ -39,20 +39,15 @@ describe("drop collections", function(){
         if (err) { return done(err); }
         done();
       });
-    }, 500000);
+    });
 
     it("should drop the specified collection", function(done){
       var dbName = mongoose.connection.db.databaseName;
-      var dropThingsName = dbName + ".dropthings";
+      var dropThingsName = "dropthings";
 
-      mongoose.connection.db.collectionNames(function(err, collections){
-        var hasDropThings = false;
-        collections.forEach(function(col){
-          if (col.name === dropThingsName) {
-            hasDropThings = true;
-          }
-        });
-
+      var query = { name: dropThingsName };
+      mongoose.connection.db.listCollections(query).toArray(function(err, collections){
+        var hasDropThings = (collections.length === 1);
         expect(hasDropThings).toBe(false);
         done();
       });

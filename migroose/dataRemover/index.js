@@ -1,3 +1,4 @@
+var RSVP = require("rsvp");
 var _ = require("underscore");
 var mongoose = require("mongoose");
 
@@ -23,7 +24,7 @@ DataRemover.prototype.remove = function(cb){
     }
   }
 
-  Promise.all(promises)
+  RSVP.all(promises)
     .then(function(data){
       cb(undefined);
     })
@@ -51,7 +52,7 @@ DataRemover.prototype.removeCollection = function(name, collectionConfig){
 // -------
 
 function _executeQuery(collectionName, query){
-  return new Promise(function(resolve, reject){
+  return new RSVP.Promise(function(resolve, reject){
 
     mongoose.connection.db.collection(collectionName, function(err, collection){
       if (err) { return reject(err); }

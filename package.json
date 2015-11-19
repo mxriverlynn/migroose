@@ -33,6 +33,7 @@
     "mongoose": "^4.2.6"
   },
   "dependencies": {
+    "rsvp": "3.1.0",
     "underscore": "1.8.3"
   }
 }
