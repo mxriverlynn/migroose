@@ -26,16 +26,14 @@
   },
   "homepage": "https://github.com/derickbailey/migroose",
   "devDependencies": {
-    "bcrypt": "^0.8.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-jasmine-node": "^0.2.1",
-    "node-jasmine-async": "^0.1.0",
-    "mongoose": "^3.8.21"
+    "grunt-jasmine-nodejs": "1.4.3",
+    "mongoose": "^4.2.6"
   },
   "dependencies": {
-    "rsvp": "^3.0.16",
-    "underscore": "^1.7.0"
+    "rsvp": "3.1.0",
+    "underscore": "1.8.3"
   }
 }

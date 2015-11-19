@@ -1,16 +1,13 @@
-var AsyncSpec = require("node-jasmine-async");
-
 var Migroose = require("../migroose");
 var DataLoader = require("../migroose/dataLoader");
 var manageConnection = require("./helpers/connection");
 
 describe("load collections", function(){
   manageConnection(this);
-  var async = new AsyncSpec(this);
 
   var dataLoader, someThings, queryThings;
 
-  async.beforeEach(function(done){
+  beforeEach(function(done){
     dataLoader = new DataLoader({
       someThings: "somethings",
       queryThings: "querythings"
@@ -38,7 +35,7 @@ describe("load collections", function(){
     });
   });
 
-  async.afterEach(function(done){
+  afterEach(function(done){
     someThings.remove(function(err){
       queryThings.remove(function(err){
         done();
@@ -47,10 +44,9 @@ describe("load collections", function(){
   });
 
   describe("when specifying a collection to load", function(){
-    var async = new AsyncSpec(this);
     var things;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.load({
@@ -83,10 +79,9 @@ describe("load collections", function(){
   });
 
   describe("when loading multiple collections", function(){
-    var async = new AsyncSpec(this);
     var things, moreThings;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.load({
@@ -119,10 +114,9 @@ describe("load collections", function(){
   });
 
   describe("when providing a query for the collection load", function(){
-    var async = new AsyncSpec(this);
     var things;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.load({

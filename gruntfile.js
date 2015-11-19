@@ -1,23 +1,5 @@
-var util = require("util");
-util.print = process.stdout.write.bind(process.stdout);
-
 module.exports = function(grunt){
   grunt.initConfig({
-    pkg: grunt.file.readJSON("package.json"),
-    meta: {
-      version: "<%= pkg.version %>",
-      banner:
-        "// <%= pkg.name %>\n" + 
-        "// ------\n" + 
-        "// <%= pkg.description %>" + 
-        "// \n" + 
-        "// v<%= pkg.version %>\n" +
-        "// Copyright (C)<%= grunt.template.today('yyyy') %> Muted Solutions, LLC.\n" + 
-        "// Distributed under <%= pkg.license %> license\n" + 
-        "// \n" +
-        "// <%= pkg.homepage %>\n" +
-        "\n"
-    },
 
     jshint: {
       options: {
@@ -26,20 +8,16 @@ module.exports = function(grunt){
       src: [ "migroose/**/*.js" ]
     },
 
-    jasmine_node: {
+    jasmine_nodejs: {
       options: {
-        forceExit: true,
-        match: ".",
-        matchall: false,
-        extensions: "js",
-        specNameMatcher: "[Ss][Pp][Ee][Cc][Ss]",
+        specNameSuffix: "-specs.js",
+        helperNameSuffix: ".js",
         useHelpers: true,
-        helperNameMatcher: "-helper",
-        jUnit: {
-          report: false
-        }
+        helpers: ["specs/helpers/**"]
       },
-      all: ["specs/"]
+      all: {
+        specs: ["specs/**/*-specs.js"]
+      },
     },
 
     watch: {
@@ -50,10 +28,10 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.loadNpmTasks("grunt-jasmine-node");
+  grunt.loadNpmTasks("grunt-jasmine-nodejs");
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-watch");
 
-  grunt.registerTask("specs", ["jshint", "jasmine_node:all"]);
+  grunt.registerTask("specs", ["jshint", "jasmine_nodejs:all"]);
   grunt.registerTask("default", ["specs", "watch"]);
 };

@@ -1,4 +1,3 @@
-var AsyncSpec = require("node-jasmine-async");
 var mongoose = require("mongoose");
 var _ = require("underscore");
 
@@ -8,9 +7,8 @@ var manageConnection = require("./helpers/connection");
 
 describe("drop collections", function(){
   manageConnection(this);
-  var async = new AsyncSpec(this);
 
-  async.beforeEach(function(done){
+  beforeEach(function(done){
     var m1 = {foo: "bar"};
     var m2 = {foo: "baz"};
 
@@ -27,10 +25,9 @@ describe("drop collections", function(){
   });
 
   describe("when specifying a collection to drop", function(){
-    var async = new AsyncSpec(this);
     var things;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.drop("dropthings");
@@ -41,7 +38,7 @@ describe("drop collections", function(){
       });
     });
 
-    async.it("should drop the specified collection", function(done){
+    it("should drop the specified collection", function(done){
       var dbName = mongoose.connection.db.databaseName;
       var dropThingsName = dbName + ".dropthings";
 
@@ -60,11 +57,10 @@ describe("drop collections", function(){
   });
 
   describe("when trying to drop a collection that doesn't exist", function(){
-    var async = new AsyncSpec(this);
     var things;
 
     var err; 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.drop("i-dont-exist");
@@ -76,7 +72,7 @@ describe("drop collections", function(){
       });
     });
 
-    async.it("should not throw an error", function(done){
+    it("should not throw an error", function(done){
       expect(err).toBe(undefined);
       done();
     });

@@ -1,16 +1,13 @@
-var AsyncSpec = require("node-jasmine-async");
-
 var DataLoader = require("../migroose/dataLoader");
 var Migroose = require("../migroose");
 var manageConnection = require("./helpers/connection");
 
 describe("remove documents from collection", function(){
   manageConnection(this);
-  var async = new AsyncSpec(this);
 
   var removeThings;
 
-  async.beforeEach(function(done){
+  beforeEach(function(done){
     var m1 = {foo: "bar"};
     var m2 = {foo: "baz"};
 
@@ -30,10 +27,9 @@ describe("remove documents from collection", function(){
   });
 
   describe("when specifying a collection to remove", function(){
-    var async = new AsyncSpec(this);
     var things;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.remove({
@@ -46,7 +42,7 @@ describe("remove documents from collection", function(){
       });
     });
 
-    async.it("should drop the specified collection", function(done){
+    it("should drop the specified collection", function(done){
       removeThings.find().toArray(function(err, models){
         if (err) { throw err; }
         expect(models.length).toBe(0);
@@ -56,10 +52,9 @@ describe("remove documents from collection", function(){
   });
 
   describe("when specifying a collection to remove, with a query", function(){
-    var async = new AsyncSpec(this);
     var things;
 
-    async.beforeEach(function(done){
+    beforeEach(function(done){
       var migration = new Migroose.Migration();
 
       migration.remove({
@@ -75,7 +70,7 @@ describe("remove documents from collection", function(){
       });
     });
 
-    async.it("should drop the specified collection", function(done){
+    it("should drop the specified collection", function(done){
       removeThings.find().toArray(function(err, models){
         if (err) { throw err; }
         expect(models.length).toBe(1);
